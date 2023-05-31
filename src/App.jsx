@@ -7,10 +7,7 @@ import {BiSearch} from 'react-icons/bi';
 import {generarCancionesPorDefault} from './helpers/defaultSongs.js';
 
 function App() {
- /* const [cancionActual, setCancionActual] =  useState( 
-    localStorage.getItem("cancion")
-  ? localStorage.getItem("cancion")
-  : "")*/
+
   const [cancionActual, setCancionActual] =  useState( []);
   const [canciones, setCanciones] = useState([]);
   const [newCancion, setNewCancion] = useState(false);
@@ -20,16 +17,30 @@ function App() {
   const [history, setHistory] = useState([]);
 
   const getTime = () => {
-    const totalMinutes = history[3].reduce((total, duration) => {
-      const [minutes, seconds] = duration.split(":");
-      return total + parseInt(minutes, 10) + parseInt(seconds, 10) / 60;
+ 
+    let totalMinutes = history.reduce((total, duration) => {
+      const [minutes, seconds] = duration.songDuration.split(":");
+      return total + parseInt(minutes, 10) ;
     }, 0);
 
+    let totalSeconds = history.reduce((total, duration) => {
+      const [minutes, seconds] = duration.songDuration.split(":");
+      return total + parseInt(seconds, 10) ;
+    }, 0);
+
+    totalMinutes = totalMinutes + totalSeconds/60;
+    totalSeconds = totalSeconds%60;
     const hours = Math.floor(totalMinutes / 60);
     const minutes = Math.floor(totalMinutes % 60);
   
-    return (   <p>{hours} hours {minutes} minutes</p>)
+    return (   <p>  Total time: {hours}:{minutes}:{totalSeconds} </p> )
   }
+
+
+
+
+
+
   useEffect(()=> {
     if( canciones.length==0)
         setCanciones(generarCancionesPorDefault())
@@ -89,7 +100,7 @@ function App() {
                         border-2 
                         border-indigo-500 rounded-full mx-auto  m-5 p-5 
                         '>
-                        
+                      {getTime()}
             </div>
 
             <div className='absolute  right-5 p-4 z-10'>
